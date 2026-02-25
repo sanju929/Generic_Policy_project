@@ -44,19 +44,19 @@ jobs:
           docker tag zen-api:latest ${{ secrets.DOCKER_USERNAME }}/zen-api:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/zen-api:latest
 
-      # 7️⃣ Deploy Docker container on your server
+      # 7️⃣ Deploy Docker container on server / self-hosted runner
       - name: Deploy on server
         uses: appleboy/ssh-action@v0.1.7
         with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_KEY }}
+          host: ${{ secrets.DEPLOY_HOST }}         # IP or hostname of your server
+          username: ${{ secrets.DEPLOY_USER }}     # SSH user
+          key: ${{ secrets.DEPLOY_KEY }}           # SSH private key
           script: |
-            # Stop previous container if running
+            echo "Stopping previous container..."
             docker stop zen-api || true
             docker rm zen-api || true
-            # Pull latest image
+            echo "Pulling latest Docker image..."
             docker pull ${{ secrets.DOCKER_USERNAME }}/zen-api:latest
-            # Run container in detached mode
+            echo "Starting new container..."
             docker run -d --name zen-api -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/zen-api:latest
-            echo "API deployed and running!"
+            echo "Deployment complete!"
