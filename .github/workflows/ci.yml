@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-run-docker:
-    runs-on: macos-latest   # or use self-hosted runner on your Mac
+    runs-on: self-hosted   # ✅ your Mac runner
 
     steps:
       # 1️⃣ Checkout code
