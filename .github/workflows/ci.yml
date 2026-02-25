@@ -29,7 +29,8 @@ jobs:
 
       # 4️⃣ Build Docker image
       - name: Build Docker image
-        run: docker build -t zen-api:latest ./zen
+        working-directory: zen
+        run: docker build -t zen-api:latest .
 
       # 5️⃣ Login to Docker Hub
       - name: Login to Docker Hub
@@ -44,13 +45,13 @@ jobs:
           docker tag zen-api:latest ${{ secrets.DOCKER_USERNAME }}/zen-api:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/zen-api:latest
 
-      # 7️⃣ Deploy Docker container on server / self-hosted runner
+      # 7️⃣ Deploy Docker container on server
       - name: Deploy on server
         uses: appleboy/ssh-action@v0.1.7
         with:
-          host: ${{ secrets.DEPLOY_HOST }}         # IP or hostname of your server
-          username: ${{ secrets.DEPLOY_USER }}     # SSH user
-          key: ${{ secrets.DEPLOY_KEY }}           # SSH private key
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
           script: |
             echo "Stopping previous container..."
             docker stop zen-api || true
